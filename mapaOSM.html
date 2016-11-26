@@ -18,9 +18,10 @@
 	</style>
 	<script type="text/javascript">
 	var inicio = function(){
+
 	/*OpenLayers.IMAGE_RELOAS_ATTEMPTS = 0;
 	OpenLayers.DOTS_PER_IMCH = 90.71428571428572;
-	OpenLayers.Utik.onTmageLoadErrorColor = 'transparent';*/
+	OpenLayers.Util.onTmageLoadErrorColor = 'transparent';*/
 	//OpenLayers.ProxHost = "cgi-bin/proxy.cgi?url=";
 	var map, opciones, proyeccion, resolucion, zoom, controlTouch, controlNavegacion, controlZoom;
 	proyeccion = new OpenLayers.Projection("EPSG:4326"); //EPSG:900913 <= es por si 
@@ -44,6 +45,8 @@
 	var OSM = new OpenLayers.Layer.OSM();
 	map.addLayer(OSM);
 
+	//addlayer recibi parametros en un array de layers
+	//map.addLayer([ObjLayer1,ObjLayer2,ObjLayer3,.........]);
 	//mostramos una region en especifico
 	//BoundingBox
 	var region = new OpenLayers.Bounds(-8882307.87997250073, -2714472.11172039993, -5319651.24140710011, -1132560.70255260007);
