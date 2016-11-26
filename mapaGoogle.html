@@ -21,6 +21,7 @@
 		OpenLayers.IMAGE_RELOAS_ATTEMPTS = 0;
 		OpenLayers.DOTS_PER_IMCH = 90.71428571428572;
 		OpenLayers.Util.onTmageLoadErrorColor = 'transparent';
+		//OpenLayers.ProxHost = "cgi-bin/proxy.cgi?url=";
 		
 		var map, mapGoogle, opciones, proyeccion, resolucion, zoom, controlTouch, controlNavegacion, controlZoom;
 		var controlLayers, osm;
@@ -46,13 +47,29 @@
 		map = new OpenLayers.Map ('map',opciones);
 		//CREAMOS EL LAYER QUE CONTENDRA AL MAPA GOOGLE
 
+		//FONDOS DE MAPA
 		osm = new OpenLayers.Layer.OSM ("OpenStreetMap");
 		mapGoogleS = new OpenLayers.Layer.Google("Mapa Satelital",{type:google.maps.MapTypeId.SATELLITE});
 		mapGoogleH = new OpenLayers.Layer.Google("Mapa Hibrido",{type:google.maps.MapTypeId.HIBRID});
 		mapGoogleR = new OpenLayers.Layer.Google("Mapa de Caminos",{type:google.maps.MapTypeId.ROAD});
 
 		map.addLayers([osm, mapGoogleS,mapGoogleH,mapGoogleR]);
-	
+
+		//CAPAS O LAYERS
+		var layerWMS = new OpenLayers.Layer.WMS(
+				"Departamentos"
+				" http://geo.gob.bo/geoserver/wms ",
+				{
+					layers: 'fondos:departamento1',
+					transparente:true,
+				},
+				{
+					'displayInLayerSwitcher': true 
+				}
+			);
+		map.addLayers(layerWMS);
+
+
 		var region = new OpenLayers.Bounds(-8882307.87997250073, -2714472.11172039993, -5319651.24140710011, -1132560.70255260007);
 
 		map.setCenter(
