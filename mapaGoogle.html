@@ -4,11 +4,11 @@
 	<title>Mapa Google</title>
 	<meta charset="utf-8">
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
-	<script type="text/javascript" src="OL2/OpenLayers.js"></script>
+	<script type="text/javascript" src="ol2/OpenLayers.js"></script>
 	<style type="text/css">
 		body{
 			height: 100%;
-			width:	100%;
+			width: 100%;
 		}
 		#map{
 			height: 700px;
@@ -17,16 +17,15 @@
 		}
 	</style>
 	<script type="text/javascript">
-	var inicio = function(){ 
-		OpenLayers.IMAGE_RELOAS_ATTEMPTS = 0;
-		OpenLayers.DOTS_PER_IMCH = 90.71428571428572;
-		OpenLayers.Util.onTmageLoadErrorColor = 'transparent';
-		//OpenLayers.ProxHost = "cgi-bin/proxy.cgi?url=";
-		
-		var map, mapGoogle, opciones, proyeccion, resolucion, zoom, controlTouch, controlNavegacion, controlZoom;
+	var inicio = function(){	
+		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 0;
+		OpenLayers.DOTS_PER_INCH = 90.71428571428572;
+		OpenLayers.Util.onImageLoadErrorColor= 'transparent';
+
+		var map, mapGoogle, opciones, proyeccion, resolucion,zoom, controlTouch, controlNavegacion,controlZoom;
 		var controlLayers, osm;
 
-		proyeccion = new OpenLayers.Projection("EPSG:4326"); //EPSG:900913 <= es por si 
+		proyeccion = new OpenLayers.Projection("EPSG:900913"); //EPSG:900913
 		resolucion = 196543.0339;
 		zoom = 20;
 		controlTouch = new OpenLayers.Control.TouchNavigation({dragPanOptions:{enableKinetic:true}});
@@ -39,53 +38,52 @@
 			projection: proyeccion,
 			maxResolution: resolucion,
 			numZoomLevels: zoom,
-			controls: [controlNavegacion, controlZoom,controlLayers],
-			//maxExtend
+			controls: [controlNavegacion,controlZoom, controlLayers],
+			// maxExtend
 		}
-	
 
-		map = new OpenLayers.Map ('map',opciones);
-		//CREAMOS EL LAYER QUE CONTENDRA AL MAPA GOOGLE
+		map = new OpenLayers.Map('map',opciones);
+		// Creamos el Layer que contendra al mapa de Google
 
 		//FONDOS DE MAPA
-		osm = new OpenLayers.Layer.OSM ("OpenStreetMap");
+		osm = new OpenLayers.Layer.OSM("OpenStreetMap");
 		mapGoogleS = new OpenLayers.Layer.Google("Mapa Satelital",{type:google.maps.MapTypeId.SATELLITE});
-		mapGoogleH = new OpenLayers.Layer.Google("Mapa Hibrido",{type:google.maps.MapTypeId.HIBRID});
+		mapGoogleH = new OpenLayers.Layer.Google("Mapa Hibrido",{type:google.maps.MapTypeId.HYBRID});
 		mapGoogleR = new OpenLayers.Layer.Google("Mapa de Caminos",{type:google.maps.MapTypeId.ROAD});
-
-		map.addLayers([osm, mapGoogleS,mapGoogleH,mapGoogleR]);
-
-		//CAPAS O LAYERS
-		var layerWMS = new OpenLayers.Layer.WMS(
-				"departamentos",
-				"http://geo.gob.bo/geoserver/wms",
+		
+		map.addLayers([osm, mapGoogleS, mapGoogleH, mapGoogleR]);
+		
+		// CAPAS O LAYERS 
+		var layerWMS =  new OpenLayers.Layer.WMS(
+				"Departamentos",
+				"http:/\/\geo.gob.bo/geoserver/wms",
 				{
 					layers: 'fondos:departamento1',
 					transparent: true
 				},
 				{
-					'displayInLayerSwitcher': true 
+					'displayInLayerSwitcher': true
 				}
 			);
-
-		//layerWMS.setVisibility(false); seteamos la visibilidad del mapa
-		map.addLayers(layerWMS);
+		layerWMS.setVisibility(false); // Seteamos la visibilidad del mapa
+		map.addLayer(layerWMS);
 
 
 		var region = new OpenLayers.Bounds(-8882307.87997250073, -2714472.11172039993, -5319651.24140710011, -1132560.70255260007);
 
 		map.setCenter(
 			region.getCenterLonLat().transform(
-				new OpenLayers.Projection("EPSG:900913"), // proyeccion inicial
-				map.getProjectionObject()  // proyeccion final
+				new OpenLayers.Projection("EPSG:900913"), // proyecciìon inicial
+				map.getProjectionObject()	// proyección final
 				),
-			6  //nivel de acercamiento
+			6	// nivel de acercamiento
 			);
-		}
-		window.onload = inicio;
+	}
+	window.onload = inicio;
 	</script>
 </head>
 <body>
 <div id="map"></div>
+
 </body>
 </html>
