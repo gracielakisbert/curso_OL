@@ -10,6 +10,7 @@
 
 
 	<script type="text/javascript" src="ol2/OpenLayers.js"></script>
+	<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
 	<style type="text/css">
 		body{
 			height: 100%;
@@ -20,12 +21,33 @@
 			width: 900px;
 			/*z-index: 99;*/
 		}
+		#tools{
+			display: inline-block;
+			width: 100%;
+			height: 50px;
+			background-color: darkblue;
+		}
+		#tools .olButton{
+			z-index: 99;
+			display: inline-block;
+			height: 38px;
+			width: 38px;
+		}
+		#tools .infoItemInactive {
+			background-image: url(img/icon-info-off.png);
+			background-repeat: no-repeat;
+			background-position: center; 
+		}
+		#tools .infoItemActive, #tools .infoItemInactive:hover {
+			background-image: url(img/icon-info-on.png);
+		}
 	</style>
 	<script type="text/javascript">
 	var inicio = function(){	
 		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 0;
 		OpenLayers.DOTS_PER_INCH = 90.71428571428572;
 		OpenLayers.Util.onImageLoadErrorColor= 'transparent';
+		OpenLayers.ProxyHost = '/cgi-bin/proxy.cgi?url=';
 		var map, mapGoogle, opciones, proyeccion, resolucion,zoom, controlTouch, controlNavegacion,controlZoom;
 		var controlLayers, osm;
 		proyeccion = new OpenLayers.Projection("EPSG:900913"); //EPSG:900913
@@ -69,10 +91,10 @@
 		map.addLayer(layerWMS);
 		// ----------LAYER DESDE GEOSERVER LOCAL
 		var layerWmsLocal =  new OpenLayers.Layer.WMS(
-				"Sistemas eléctricos",
-				"http:/\/\192.168.1.150:7070/geoserver/wms",
+				"Sistemas electricos",
+				"http://192.168.1.150:7070/geoserver/wms",
 				{
-					layers: 'ws_reynaldo:PrincipalesSistemasElectricos',
+					layers: 'we_daniel:PrincipalesSistemasElectricos',
 					transparent: true
 				},
 				{
@@ -81,6 +103,49 @@
 			);
 		layerWmsLocal.setVisibility(false); // Seteamos la visibilidad del mapa
 		map.addLayer(layerWmsLocal);
+		// --- CONTROL PARA MOSTRAR METADATA DE UN  LAYER
+		var getInfo = new OpenLayers.Control.WMSGetFeatureInfo(
+				{
+					id: 'infoControl',
+					title: 'Información',
+					queryVisible: true,
+					eventListeners: {
+						getfeatureinfo: function (event){
+							var popup = new OpenLayers.Popup.FramedCloud(
+								'Popup',
+								map.getLonLatFromPixel(event.xy),
+								null,
+								event.text,
+								null,
+								true
+								);
+							map.addPopup(popup,false);
+									
+						}
+					}
+				}
+			);
+		map.addControl(getInfo);
+		var btnInfo = new OpenLayers.Control.Button(
+				{
+					displayClass: 'info',
+					type: OpenLayers.Control.TYPE_TOGGLE,
+					title: 'Información',
+					eventListeners:
+						{
+							'activate' : function (){
+								getInfo.activate();	
+							},
+							'deactivate' : function(){
+								getInfo.deactivate();
+							}
+						}
+				}
+			);
+		var tools = document.getElementById('tools');
+		var panel = new OpenLayers.Control.Panel({div:tools});
+		panel.addControls([btnInfo]);
+		map.addControl(panel);
 		var region = new OpenLayers.Bounds(-8882307.87997250073, -2714472.11172039993, -5319651.24140710011, -1132560.70255260007);
 		map.setCenter(
 			region.getCenterLonLat().transform(
@@ -94,6 +159,7 @@
 	</script>
 </head>
 <body>
+<div id="tools"></div>
 <div id="map"></div>
 
 </body>
